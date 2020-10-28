@@ -17,17 +17,18 @@ class StoreController extends Controller
     public function create()
     {
         // Apresenta um formulario de criação da loja --- faz umas listagem de todos os usuarios para vincular
-        $users = \App\User::all(['id' , 'name']);
+        
+        //$users = \App\User::all(['id' , 'name']); listava todos usuarios, eviava para view utilizando o compact  "compact('users')"
 
-        return view('admin.stores.create', compact('users'));
+        return view('admin.stores.create');
     }
 
     public function store(Request $request)
     {
         //Criação da loja, vincula a loja ao usuario
         $data = $request->all();
-
-        $user = \App\User::find($data['user']);
+        $user = auth()->user();
+                
         $store = $user->store()->create($data);
 
         flash('Loja criada com sucesso')->success();

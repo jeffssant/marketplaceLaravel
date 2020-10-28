@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <h1>Criar loja</h1>
+    <h1>Atualizar loja</h1>
 <form action="{{route('admin.stores.update',['store' => $store->id])}}" method="post">
         @csrf
         @method('PUT')
@@ -27,6 +27,11 @@
         <div class="form-group">
             <label for="">Slug</label>
             <input class="form-control" type="text" name="slug" value="{{$store->slug}}">
+        </div>
+
+        <div class="form-group">
+            <label for="">User ID</label>
+            <span>{{$store->user_id}}</span>
         </div>
         
         
