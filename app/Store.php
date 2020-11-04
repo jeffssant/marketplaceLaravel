@@ -12,6 +12,7 @@ class Store extends Model
         'phone',
         'mobile_phone',
         'slug',
+        'logo',
     ];
 
     public function user()
