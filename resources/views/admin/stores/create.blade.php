@@ -55,14 +55,8 @@
                 {{$message}}
             </div>
             @enderror
-        </div>
+        </div>       
 
-        
-        <div class="form-group">
-            <label for="">Slug</label>
-            <input class="form-control" type="text" name="slug">
-        </div>        
-        
         
         <div class="form-group">
             <button type="submit" class="btn btn-lg btn-success">Criar Loja</button>

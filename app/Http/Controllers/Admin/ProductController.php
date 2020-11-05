@@ -52,12 +52,13 @@ class ProductController extends Controller
     {
        
         $data = $request->all();
+        $categories = $request->get('categories', null);
         
 
         $store = auth()->user()->store;
         $product = $store->products()->create($data);        
 
-        $product->categories()->sync($data['categories']);
+        $product->categories()->sync($categories);
 
         if($request->hasFile('photos')){
             $images = $this->imageUpload($request->file('photos'), 'image');       
@@ -108,11 +109,14 @@ class ProductController extends Controller
     public function update(ProductRequest $request, $product)
     {
         $data = $request->all();
+        $categories = $request->get('categories', null);
 
         $product = $this->product->find($product);
+        
         $product->update($data);
-
-        $product->categories()->sync($data['categories']);
+        
+        $product->categories()->sync($categories);
+       
 
         if($request->hasFile('photos')){
             $images = $this->imageUpload($request->file('photos'), 'image');  
@@ -121,10 +125,11 @@ class ProductController extends Controller
             $product->photos()->createMany($images);
         }
 
-
+        
+        
         flash('Produto atualizado com sucesso')->success();
 
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.products.edit', ['product' => $product->id]);
     }
 
     /*

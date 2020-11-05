@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('content')
 
+@section('content')
 @if (!$store)
     <a href="{{route('admin.stores.create')}}" class="btn btn-lg btn-success mb-4">Criar Loja</a>    
-@endif
+@else
 <table class="table table-striped">
     <thead>
         <tr>
@@ -34,5 +34,6 @@
         </tr>
     </tbody>
 </table>
+@endif
 
 @endsection

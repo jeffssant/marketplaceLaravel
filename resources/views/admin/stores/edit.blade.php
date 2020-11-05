@@ -38,11 +38,6 @@
         </div>
         
         <div class="form-group">
-            <label for="">Slug</label>
-            <input class="form-control" type="text" name="slug" value="{{$store->slug}}">
-        </div>
-
-        <div class="form-group">
             <label for="">User ID</label>
             <span>{{$store->user_id}}</span>
         </div>
