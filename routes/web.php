@@ -11,19 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/product/{slug}', 'HomeController@single')->name('product.single');
 
-Route::get('/model', function () {    
-
-    //adicionar produto a uma categoria
-    $product = \App\Product::find(41);
-
-    //dd($product->categories()->attach([1])); // adiciona o id "1" da categoria ao produto
-    dd($product->categories()->sync([2])); // sincroniza os id (exclui e adiciona baseado na lista)
-
+Route::prefix('cart')->name('cart.')->group(function(){
+    Route::post('add', 'CartController@add')->name('add');
+    Route::get('/', 'CartController@index')->name('index');
+    Route::get('/remove/{slug}', 'CartController@remove')->name('remove');
+    Route::get('cancel', 'CartController@cancel')->name('cancel');
 });
+
 
 
 Route::group(['middleware' => ['auth']], function () {
@@ -54,3 +51,15 @@ Route::group(['middleware' => ['auth']], function () {
 Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
+
+
+
+Route::get('/model', function () {    
+
+    //adicionar produto a uma categoria
+    $product = \App\Product::find(41);
+
+    //dd($product->categories()->attach([1])); // adiciona o id "1" da categoria ao produto
+    dd($product->categories()->sync([2])); // sincroniza os id (exclui e adiciona baseado na lista)
+
+});

@@ -141,6 +141,8 @@ class ProductController extends Controller
     public function destroy($product)
     {
         $product = $this->product->find($product);
+        $categories = null;
+        $product->categories()->sync($categories);
         $product->delete();
 
         flash('Produto removido com sucesso')->success();
