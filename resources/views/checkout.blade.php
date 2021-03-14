@@ -28,6 +28,8 @@
                     <input type="text" class="form-control" name="card_cvv">
                 </div>
 
+                <div class="col-md-12 installments form-group"></div>
+
             </div>
            
 
@@ -53,22 +55,62 @@
 
         cardNumber.addEventListener('keyup', function(){
             if(cardNumber.value.length >= 6){
+
                 PagSeguroDirectPayment.getBrand({
                     cardBin:cardNumber.value.substr(0,6),
+
                     success: function(res){
-                        console.log(res);
+                        //console.log(res);
                         let imgFlag = `<img src="https://stc.pagseguro.uol.com.br/public/img/payment-methods-flags/68x30/${res.brand.name}.png" alt="Bandeira">`;
                         spanBrand.innerHTML = imgFlag;
+
+                        getInstallments(40, res.brand.name);
                     },
                     error: function(err) {
-                        console.log(err);
+                        //console.log(err);
                     },
                     complete: function(res){
                        // console.log('Complete:', res)
                     }
+
                 });
             }
            
         })
+
+
+        function getInstallments (amount, brand){
+            PagSeguroDirectPayment.getInstallments({
+                amount: amount,
+                brand: brand,
+                maxIstallmentNoIterest: 0,
+                success: function(res){
+                    let selectInstallments = drawSelectInstallments(res.installments[brand]);
+                    document.querySelector('div.installments').innerHTML = selectInstallments;
+                },
+                complete: function(err){
+                    //console.log(err);
+                },
+                error: function(res){
+
+                },
+            })
+        }
+
+
+        function drawSelectInstallments(installments) {
+           
+            let select = '<label>Opções de Parcelamento:</label>';
+
+            select += '<select class="form-control">';
+
+            for(let l of installments) {
+                select += `<option value="${l.quantity}|${l.installmentAmount}">${l.quantity}x de ${l.installmentAmount} - Total fica ${l.totalAmount}</option>`;
+            }
+
+            select += '</select>';
+
+            return select;
+        }
     </script>
 @endsection
