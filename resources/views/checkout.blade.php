@@ -6,8 +6,15 @@
             <h2 class="mb-3">Dados para Pagamento</h2>
             <div class="row">
                 <div class="form-group col-md-12">
+                    <label for="">Nome do cartão </label>
+                    <input type="text" class="form-control" name="card_name">                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
                     <label for="">Número do cartão <span class="brand"></span></label>
                     <input type="text" class="form-control" name="card_number">
+                    <input type="hidden" name="card_brand">
                 </div>
             </div>
 
@@ -33,7 +40,7 @@
             </div>
            
 
-            <input type="button" class="btn btn-success btn-lg" value="Efetuar Pagamento">
+            <input type="button" class="btn btn-success btn-lg processCheckout" value="Efetuar Pagamento">
             
             
             
@@ -43,7 +50,8 @@
 
 @section('scripts')
     <script src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
-    
+    <script src="{{asset('assets/js/jQuery.ajax.js')}}"></script>
+
     <script>
         const sessionId = '{{session()->get('pagseguro_session_code')}}';
         PagSeguroDirectPayment.setSessionId(sessionId);
@@ -52,6 +60,7 @@
     <script>
         let cardNumber = document.querySelector('input[name=card_number]');
         let spanBrand = document.querySelector('span.brand');
+        let amountTransaction = '{{$cartItems}}';
 
         cardNumber.addEventListener('keyup', function(){
             if(cardNumber.value.length >= 6){
@@ -64,7 +73,9 @@
                         let imgFlag = `<img src="https://stc.pagseguro.uol.com.br/public/img/payment-methods-flags/68x30/${res.brand.name}.png" alt="Bandeira">`;
                         spanBrand.innerHTML = imgFlag;
 
-                        getInstallments(40, res.brand.name);
+                        document.querySelector('input[name=card_brand]').value = res.brand.name;
+
+                        getInstallments(amountTransaction, res.brand.name);
                     },
                     error: function(err) {
                         //console.log(err);
@@ -77,6 +88,55 @@
             }
            
         })
+
+        let submitButton = document.querySelector('input.processCheckout');
+
+        submitButton.addEventListener('click', function(event){
+            event.preventDefault();
+
+            PagSeguroDirectPayment.createCardToken({
+
+                cardNumber:     document.querySelector('input[name=card_number]').value,
+                brand:          document.querySelector('input[name=card_brand]').value,
+                cvv:            document.querySelector('input[name=card_cvv]').value,
+                expirationMonth:document.querySelector('input[name=card_month]').value,
+                expirationYear: document.querySelector('input[name=card_year]').value,
+
+                success: function(res){
+                    console.log(res);
+                    processPayment(res.card.token);
+                },
+
+                error: function(err){
+                    console.log(err);
+                },
+
+            })
+        })
+
+        function processPayment(token) {
+            let data = {
+                card_token: token,
+                hash: PagSeguroDirectPayment.getSenderHash(),
+                installment: document.querySelector('.select_installments').value, 
+                card_name: document.querySelector('input[name=card_name]').value,
+                _token: '{{csrf_token()}}'
+            };
+
+
+            $.ajax({
+                type: 'Post',
+                url: '{{route("checkout.proccess")}}',
+                data: data,
+                dataType: 'json',
+                success: function(res){
+                    console.log(res);
+                },
+                error: function(err){
+                    console.log(err);
+                },
+            });
+        }
 
 
         function getInstallments (amount, brand){
@@ -102,7 +162,7 @@
            
             let select = '<label>Opções de Parcelamento:</label>';
 
-            select += '<select class="form-control">';
+            select += '<select class="form-control select_installments">';
 
             for(let l of installments) {
                 select += `<option value="${l.quantity}|${l.installmentAmount}">${l.quantity}x de ${l.installmentAmount} - Total fica ${l.totalAmount}</option>`;
