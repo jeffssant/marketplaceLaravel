@@ -8,7 +8,6 @@ class CheckoutController extends Controller
 {
     public function index()
     {
-        //session()->forget('pagseguro_session_code');
         if( !auth()->check() ){
             return redirect()->route('login');
         }
@@ -36,11 +35,9 @@ class CheckoutController extends Controller
          */
         $creditCard->setReceiverEmail(env('PAGSEGURO_EMAIL'));
 
-        
-
         // Set a reference code for this payment request. It is useful to identify this payment
         // in future notifications.
-        $creditCard->setReference('compra');
+        $creditCard->setReference($reference);
 
         // Set the currency
         $creditCard->setCurrency("BRL");
@@ -50,7 +47,7 @@ class CheckoutController extends Controller
         foreach ($cartItens as $item) { 
             // Add an item for this payment request
             $creditCard->addItems()->withParameters(
-                'produto',
+                $reference,
                 $item['name'],
                 $item['amount'],
                 $item['price']
@@ -63,8 +60,7 @@ class CheckoutController extends Controller
         $user = auth()->user();
         $email = env('PAGSEGURO_ENV') == 'sandbox' ? 'test@sandbox.pagseguro.com.br' : $user->email;
 
-        
-        $creditCard->setSender()->setName($user->name);
+        $creditCard->setSender()->setName($dataPost['card_name']);
         $creditCard->setSender()->setEmail($email);
 
         $creditCard->setSender()->setPhone()->withParameters(
@@ -78,8 +74,6 @@ class CheckoutController extends Controller
         );
 
         $creditCard->setSender()->setHash($dataPost['hash']);
-
-        
 
         $creditCard->setSender()->setIp('127.0.0.0');
 
@@ -109,7 +103,6 @@ class CheckoutController extends Controller
 
         // Set credit card token
         $creditCard->setToken($dataPost['card_token']);
-      
 
         // Set the installment quantity and value (could be obtained using the Installments
         // service, that have an example here in \public\getInstallments.php)
@@ -135,8 +128,6 @@ class CheckoutController extends Controller
 
         // Set the Payment Mode for this payment request
         $creditCard->setMode('DEFAULT');
-
-        
 
         $result = $creditCard->register(
             \PagSeguro\Configuration\Configure::getAccountCredentials()
