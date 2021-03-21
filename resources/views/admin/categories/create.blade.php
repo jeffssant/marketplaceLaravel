@@ -25,7 +25,7 @@
                 {{$message}}
             </div>
             @enderror
-        </div>    
+        </div>
 
         <div>
             <button type="submit" class="btn btn-lg btn-success">Criar Categoria</button>

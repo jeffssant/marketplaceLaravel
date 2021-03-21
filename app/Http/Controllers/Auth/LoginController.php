@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -27,7 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'admin/stores';
+    protected $redirectTo = '/admin/stores';
 
     /**
      * Create a new controller instance.
@@ -39,12 +38,17 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    protected function authenticated(Request $request, $user) 
+    protected function authenticated(Request $request, $user)
     {
-        if(session()->has('cart')) {
-            return redirect()->route('checkout.index');
-        }
+	    if($user->role == 'ROLE_OWNER')
+		    return redirect()->route('admin.stores.index');
 
-        return null;
+	    if($user->role == 'ROLE_USER' && session()->has('cart')) {
+    		return redirect()->route('checkout.index');
+	    } else {
+			return redirect()->route('home');
+	    }
+
+	    return null;
     }
 }

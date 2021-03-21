@@ -18,11 +18,11 @@ class CreateCategoryProductTable extends Migration
             $table->unsignedBigInteger('category_id');
 
             $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('category_id')->references('id')->on('categories');
+	        $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 
-    /**
+    /**w
      * Reverse the migrations.
      *
      * @return void

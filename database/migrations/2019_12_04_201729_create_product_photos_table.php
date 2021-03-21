@@ -17,6 +17,7 @@ class CreateProductPhotosTable extends Migration
             $table->bigIncrements('id');
 
             $table->unsignedBigInteger('product_id');
+
             $table->string('image');
 
             $table->timestamps();

@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'role'
     ];
 
     /**
@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token'
     ];
 
     /**
@@ -34,16 +34,22 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime'
     ];
 
     public function store()
     {
-        return $this->hasOne(Store::class);
+    	return $this->hasOne(Store::class);
     }
 
     public function orders()
     {
-        return $this->hasMany(UserOrder::class);
+    	return $this->hasMany(UserOrder::class);
+    }
+
+    public function routeNotificationForNexmo($notification)
+    {
+    	$storeMobilePhoneNumber = trim(str_replace(['(', ')', ' ', '-'], '', $this->store->mobile_phone));
+    	return '55' . $storeMobilePhoneNumber;
     }
 }
