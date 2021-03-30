@@ -39,10 +39,10 @@ function getInstallments(amount, brand) {
             document.querySelector('div.installments').innerHTML = selectInstallments;
         },
         error: function(err) {
-            //console.log(err);
+            console.log(err);
         },
         complete: function(res) {
-            console.log(res);
+
         },
     })
 }
