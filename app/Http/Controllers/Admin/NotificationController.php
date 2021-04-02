@@ -9,9 +9,10 @@ class NotificationController extends Controller
 {
     public function notifications()
     {
-		$unreadNotifications = auth()->user()->unreadNotifications;
+		$Notifications = auth()->user()->Notifications;
+		
 
-		return view('admin.notifications', compact('unreadNotifications'));
+		return view('admin.notifications', compact('Notifications'));
     }
 
     public function readAll()

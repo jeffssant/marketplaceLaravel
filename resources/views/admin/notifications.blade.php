@@ -17,13 +17,17 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($unreadNotifications as $n)
-                <tr>
+            @forelse($Notifications as $n)                
+                <tr class="@if ($n->read_at) text-muted @endif">
                     <td>{{$n->data['message']}}</td>
                     <td>{{$n->created_at->locale('pt')->diffForHumans()}}</td>
                     <td>
                         <div class="btn-group">
-                            <a href="{{route('admin.notifications.read', ['notification' => $n->id])}}" class="btn btn-sm btn-primary">Marcar como lida</a>
+                            @if ($n->read_at)
+                                Nenhuma ação.
+                            @else
+                                <a href="{{route('admin.notifications.read', ['notification' => $n->id])}}" class="btn btn-sm btn-primary ">Marcar como lida</a>
+                            @endif                            
                         </div>
                     </td>
                 </tr>

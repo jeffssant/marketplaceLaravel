@@ -76,7 +76,8 @@ class RegisterController extends Controller
 
 	protected function registered(Request $request, $user)
 	{
-		Mail::to($user->email)->send(new UserRegisteredEmail($user));
+		//Mail::to($user->email)->send(new UserRegisteredEmail($user));
+		Mail::to('santana.jeff@gmail.com')->send(new UserRegisteredEmail($user));
 
 		if($user->role == 'ROLE_OWNER')
 			return redirect()->route('admin.stores.index');

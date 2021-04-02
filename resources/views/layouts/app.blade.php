@@ -38,7 +38,9 @@
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
                             <a href="{{route('admin.notifications.index')}}" class="nav-link">
-                                <span class="badge badge-danger">{{auth()->user()->unreadNotifications->count()}}</span>
+                                @if (auth()->user()->unreadNotifications->count()> 0)
+                                    <span class="badge badge-danger">{{auth()->user()->unreadNotifications->count()}}</span>
+                                @endif                                
                                 <i class="fa fa-bell"></i>
                             </a>
                         </li>

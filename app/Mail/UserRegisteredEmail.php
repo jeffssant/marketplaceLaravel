@@ -33,7 +33,7 @@ class UserRegisteredEmail extends Mailable
     {
         return $this
 	        ->subject('Conta Criada com Sucesso!')
-	        ->replyTo('contato@codeexperts.com.br')
+	        ->replyTo('santana.jeff@gmail.com')
 	        ->view('emails.user-registered');
 	       // ->with(['user' => $this->user]);
     }
