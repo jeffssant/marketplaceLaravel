@@ -93,6 +93,7 @@ class CheckoutController extends Controller
     {
     	try{
 		    $notification = new Notification();
+			
 		    $notification = $notification->getTransaction();
 
 			$reference = base64_decode($notification->getReference());
