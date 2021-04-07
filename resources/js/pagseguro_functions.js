@@ -23,7 +23,7 @@ function proccessPayment(token, buttonTarget)
             buttonTarget.innerHTML = 'Efetuar Pagamento';
 
             let message = JSON.parse(err.responseText);
-            document.querySelector('div.msg').innerHTML = showErrorMessages(message.data.message.error.message);
+            document.querySelector('div.msg').innerHTML = showErrorMessages(message.data.message);
         }
     });
 }

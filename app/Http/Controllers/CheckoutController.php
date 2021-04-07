@@ -74,11 +74,16 @@ class CheckoutController extends Controller
 		    ]);
 
 	    } catch (\Exception $e) {
+			$message = env('APP_DEBUG') ? simplexml_load_string($e->getMessage()) : 'Erro ao processar pedido!';
+		
+			$message =  env('APP_DEBUG') ? (array)$message->error->message : $message;
+			
     		return response()->json([
 			    'data' => [
 				    'status' => false,
-				    'message' => 'Erro ao processar pedido'.$e,
-				    'order'   => $reference
+				    'message' => $message['0'],
+				    'order'   => $reference,
+					'error' => 'Unauthorized'
 			    ]
 				], 401);
 	    }
