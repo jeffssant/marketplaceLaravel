@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,8 +25,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Paginator::useBootstrap();
+        
 	    \PagSeguro\Library::initialize();
 	    \PagSeguro\Library::cmsVersion()->setName("Marketplace")->setRelease("1.0.0");
 	    \PagSeguro\Library::moduleVersion()->setName("Marketplace")->setRelease("1.0.0");
+
     }
 }
