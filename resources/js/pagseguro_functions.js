@@ -1,22 +1,31 @@
-function proccessPayment(token, buttonTarget)
+function proccessPayment(token, buttonTarget, paymentType)
 {
-    let data = {
-        card_token: token,
-        hash: PagSeguroDirectPayment.getSenderHash(),
-        installment: document.querySelector('select.select_installments').value,
-        card_name: document.querySelector('input[name=card_name]').value,
+    let data = {        
+        hash: PagSeguroDirectPayment.getSenderHash(),        
+        paymentType: paymentType,        
         _token: csrf
     };
+
+    //alert('proc');
+
+    if(paymentType == 'CREDITCARD'){
+        data.card_token = token;
+        data.installment = document.querySelector('select.select_installments').value;
+        data.card_name= document.querySelector('input[name=card_name]').value;
+    }
 
     $.ajax({
         type: 'POST',
         url: urlProccess,
         data: data,
         dataType: 'json',
-        success: function(res) {
+        success: function(res) {          
+            console.log(res);  
+            let redirectUrl = `${urlThanks}?order=${res.data.order}`;
+            let linkBoleto = `${redirectUrl}&b=${res.data.link_boleto}`;
 
             toastr.success(res.data.message, 'Sucesso');
-            window.location.href = `${urlThanks}?order=${res.data.order}`;
+            window.location.href = paymentType === "BOLETO" ? linkBoleto : redirectUrl
         },
         error: function(err) {
             buttonTarget.disabled = false;

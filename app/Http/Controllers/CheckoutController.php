@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Payment\PagSeguro\CreditCard;
+use App\Payment\PagSeguro\Boleto;
 use App\Payment\PagSeguro\Notification;
 use App\Store;
 use App\UserOrder;
@@ -45,8 +46,13 @@ class CheckoutController extends Controller
 		    $stores = array_unique(array_column($cartItems, 'store_id'));
 		    $reference = Uuid::uuid4();
 
-		    $creditCardPayment = new CreditCard($cartItems, $user, $dataPost, $reference);
-		    $result = $creditCardPayment->doPayment();
+		    $Payment = $dataPost['paymentType'] == 'BOLETO' 
+				? new Boleto($cartItems, $user, $reference, $dataPost['hash'])
+				: new CreditCard($cartItems, $user, $dataPost, $reference);
+
+				
+		    $result = $Payment->doPayment();			
+
 
 		    $userOrder = [
 			    'reference' => $reference,
@@ -56,27 +62,31 @@ class CheckoutController extends Controller
 		    ];
 
 		    $userOrder = $user->orders()->create($userOrder);
-
 		    $userOrder->stores()->sync($stores);
-
-		    //Notificar loja de novo pedido
+		
 		    $store = (new Store())->notifyStoreOwners($stores);
 
 		    session()->forget('cart');
 		    session()->forget('pagseguro_session_code');
 
+			$dataJson = [
+				'status' => true,
+				'message' => 'Pedido criado com sucesso!',
+				'order'   => $reference
+			];
+
+			if($dataPost['paymentType'] == 'BOLETO') $dataJson['link_boleto'] = $result->getPaymentLink();
+
 		    return response()->json([
-			    'data' => [
-				    'status' => true,
-				    'message' => 'Pedido criado com sucesso!',
-				    'order'   => $reference
-			    ]
+			    'data' => $dataJson
 		    ]);
 
+			
 	    } catch (\Exception $e) {
-			$message = env('APP_DEBUG') ? simplexml_load_string($e->getMessage()) : 'Erro ao processar pedido!';
+			dd($e);
+			//$message = env('APP_DEBUG') ? simplexml_load_string($e->getMessage()) : 'Erro ao processar pedido!';
 		
-			$message =  env('APP_DEBUG') ? (array)$message->error->message : $message;
+			//$message =  env('APP_DEBUG') ? (array)$message->error->message : $message;
 			
     		return response()->json([
 			    'data' => [
