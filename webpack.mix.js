@@ -12,7 +12,8 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css')
+    .css('resources/css/style_template.css', 'public/css');
 
 mix.copy('resources/js/pagseguro_functions.js', 'public/js')
     .copy('resources/js/pagseguro_events.js', 'public/js');

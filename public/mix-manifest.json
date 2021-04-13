@@ -1,6 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
+    "/css/style_template.css": "/css/style_template.css",
     "/js/pagseguro_functions.js": "/js/pagseguro_functions.js",
     "/js/pagseguro_events.js": "/js/pagseguro_events.js"
 }
