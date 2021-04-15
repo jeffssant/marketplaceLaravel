@@ -21,7 +21,7 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0"><a class="navbar-brand" href="index.html">
+    <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0 container"><a class="navbar-brand" href="index.html">
         <span class="font-weight-bold text-uppercase text-dark">Boutique</span></a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -29,15 +29,18 @@
                 <li class="nav-item">
                     <!-- Link--><a class="nav-link active" href="{{route('home')}}">Home</a>
                 </li>
-                @foreach($categories as $category)
+                @if ($categories)     
                     <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" id="pagesDropdown" href="#"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categorias</a>
                         <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
-                            <a class="dropdown-item border-0 transition-link"
+                            @foreach($categories as $category)
+                                <a class="dropdown-item border-0 transition-link"
                                 href="{{route('category.single', ['slug' => $category->slug])}}">{{$category->name}}</a>
-                        </div>
+                            @endforeach
+                            </div>
                     </li>
-                @endforeach
+                @endif
+                
             </ul>
             <ul class="navbar-nav ml-auto">
                 @if(session()->has('cart'))
@@ -61,8 +64,11 @@
                         </form>
                     </li>
                 @endauth
-                <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"> 
-                    <i class="fas fa-user-alt mr-1 text-gray"></i>Login</a></li>
+                @guest
+                    <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"> 
+                        <i class="fas fa-user-alt mr-1 text-gray"></i>Login</a>
+                    </li>
+                @endguest
             </ul>
         </div>
     </nav>
@@ -71,6 +77,39 @@
         @include('flash::message')
         @yield('content')
     </div>
+    <footer class="bg-dark text-white mt-5">
+        <div class="container py-4">
+            <div class="row py-5">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h6 class="text-uppercase mb-3">Customer services</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li><a class="footer-link" href="#">Help &amp; Contact Us</a></li>
+                        <li><a class="footer-link" href="#">Returns &amp; Refunds</a></li>
+                        <li><a class="footer-link" href="#">Online Stores</a></li>
+                        <li><a class="footer-link" href="#">Terms &amp; Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h6 class="text-uppercase mb-3">Company</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li><a class="footer-link" href="#">What We Do</a></li>
+                        <li><a class="footer-link" href="#">Available Services</a></li>
+                        <li><a class="footer-link" href="#">Latest Posts</a></li>
+                        <li><a class="footer-link" href="#">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-uppercase mb-3">Social media</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li><a class="footer-link" href="#">Twitter</a></li>
+                        <li><a class="footer-link" href="#">Instagram</a></li>
+                        <li><a class="footer-link" href="#">Tumblr</a></li>
+                        <li><a class="footer-link" href="#">Pinterest</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="{{asset('js/app.js')}}"></script>
     @yield('scripts')
